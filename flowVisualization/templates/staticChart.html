@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html> 
+        <head> 
+                <title>Network data flow Visualization</title>
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+                <script src="http://canvasjs.com/assets/script/canvasjs.min.js"></script>
+                <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        </head>
+        <body>
+        
+        <script>
+                function renderChart(container, date, maxd, mind, avgd, maxu, minu, avgu){
+                        var chart = new CanvasJS.Chart(container,
+                        {
+                          title:{
+                                text: "Data record created on : " + date    
+                          },
+                          animationEnabled: true,
+                          axisY: {
+                              title: "KB/s"
+                          },
+                          legend: {
+                            verticalAlign: "bottom",
+                            horizontalAlign: "center"
+                          },
+                          theme: "theme2",
+                          data: [
+
+                          {        
+                            type: "column",  
+                            showInLegend: true, 
+                            legendMarkerColor: "grey",
+                            legendText: "Network trasmitting rate.",
+                            dataPoints: [      
+                              {y: parseFloat(maxd), label: "Max downloading rate"},
+                              {y: parseFloat(mind),  label: "Min downloading rate" },
+                              {y: parseFloat(avgd),  label: "Average downloading rate"},
+                              {y: parseFloat(maxu),  label: "Max uploading rate"},
+                              {y: parseFloat(minu), label: "Min uploading rate"},
+                              {y: parseFloat(avgu),  label: "Average uploading rate"},    
+                             ]
+                        }   
+                        ]
+                        });
+                        chart.render();
+                }
+        </script>
+        
+        {% for single_entry in data %}
+                <script>
+                        var div = document.createElement("div");
+                        div.style.width = "100%";
+                        div.style.height = "300px";
+                        div.id = "{{ forloop.counter }}";
+                        document.body.appendChild(div);
+                        
+                        var p2 = document.createElement("p");
+                        p2.style.width = "100%";
+                        p2.style.height = "30px";
+                        p2.setAttribute("class","w3-pale-blue");
+                        p2.id = "Description #{{ forloop.counter }}";
+                        document.body.appendChild(p2);
+                        p2.innerHTML = "{{ single_entry.description }}"
+                        
+                        var p = document.createElement("p");
+                        p.style.width = "100%";
+                        p.style.height = "70px";
+                        p.setAttribute("class","w3-pale-red");
+                        p.id = "Tag #{{ forloop.counter }}";
+                        document.body.appendChild(p);
+                        p.innerHTML = "Total downloaded amount: {{ single_entry.totalDownloadValue }} KB<br> Total uploaded amount: {{ single_entry.totalUploadValue }} KB<br> Time during the record: {{ single_entry.timeLasted }} second";
+
+                        
+                        var for_conuter = "{{ forloop.counter }}";
+                        renderChart("{{ forloop.counter }}", 
+                                "{{ single_entry.date }}", 
+                                "{{ single_entry.maxDownloadValue }}", 
+                                "{{ single_entry.minDownloadValue }}", 
+                                "{{ single_entry.avgDownloadValue }}", 
+                                "{{ single_entry.maxUploadValue }}", 
+                                "{{ single_entry.minUploadValue }}", 
+                                "{{ single_entry.avgUploadValue }}");
+                                
+                        
+                </script>
+        {% endfor %}
+        </body>
+</html>
+
